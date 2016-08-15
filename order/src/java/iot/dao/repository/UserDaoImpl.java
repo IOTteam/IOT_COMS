@@ -49,24 +49,29 @@ public class UserDaoImpl implements UserDAO{
    }
     
     @Override
-    public User getUserByname(String username){
+    public User getUserByname(String username,String password){
         
         try {
             
         emf = Persistence.createEntityManagerFactory("orderPU");
         EntityManager em = emf.createEntityManager();        
-        Query query = em.createQuery("SELECT u FROM User u where u.userName=:username");
+        Query query = em.createQuery("SELECT u FROM User u where u.userName=:username and u.password=:password");
         query.setParameter("username", username);
+        query.setParameter("password", password);
         User user =(User)query.getSingleResult();
         em.close();
         
         return user;
             
         } catch (Exception e) {
-            
-            return new  User();
+            e.printStackTrace();
             
         }
+        
+        User u = new User();
+        u.setUserName("");
+        u.setPassword("");
+        return u;
         
     }
     

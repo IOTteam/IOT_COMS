@@ -12,6 +12,6 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h1>no user</h1>
+        <h1>用户名或密码错误</h1>
     </body>
 </html>

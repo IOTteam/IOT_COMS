@@ -38,14 +38,14 @@ public class loginController {
         System.out.println(username);
         
         UserDaoImpl udi = new UserDaoImpl();
-        User user = udi.getUserByname("admin");
+        User user = udi.getUserByname(username,password);
         
-            if (user.getPassword().equals("admin")) {
-                        model.addAttribute("name", user.getUserId() + user.getUserName());
-                        return "hello";
-            }else{
-             return "no";
-            }
+        if (user.getPassword().equals("")&&user.getUserName().equals("")){
+            return "no";
+        }else{
+            model.addAttribute("name", user.getUserId() + user.getUserName());
+            return "hello";
+        }
     }
     
 }

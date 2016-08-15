@@ -15,7 +15,7 @@ import java.util.List;
 public interface UserDAO {
     
     public User getUser(String userId);
-    public User getUserByname(String username);
+    public User getUserByname(String username,String password);
     public List<User> getAllUser();
     public void addUser(User user);
     public void editUser(User user);
