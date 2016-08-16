@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,43 +13,35 @@
         <title>客户信息表</title>
     </head>
     <body>
-        <form action="" method="post">
-            <div class="">
+
+        <h1>${cus}</h1>
+        <div class="">
+            <form action="CustInfo" method="post">
 		<h3 align="center">客户信息列表</h3>
-		    <p>客户编码：<input type="text" name="userName" />
-                       客户名称：<input type="text" name="userName" />
-                       <input type="submit" value="查询" class=""/>
+		    <p>客户编码：<input type="text" name="customerId" />
+                       客户名称：<input type="text" name="customerName" />
+                       <input type="submit" value="查询"/>
                     </p>
-            </div>
-        </form>
+            </form>
+        </div>
+
         <table  border="1px" cellspacing="0px" class="" style="height:300px; width:100%; border-collapse:collapse" >
 		<tr>
-		<th style="width:100px">客户编码</th> <th style="width:100px">客户信息</th>  <th style="width:100px">电子邮件</th>   
+		<th style="width:100px">客户姓名</th> <th style="width:100px">客户邮箱</th>  <th style="width:100px">客户电话</th>   
 		</tr>
+                <c:forEach items="${cmList}" var ="customer">
                 <tr>
-                    <td style="width:100px">2016</td> <td style="width:100px">保密</td>  <td style="width:100px">122456789@qq.com</td>
-                </tr> 
-                <tr>
-                    <td style="width:100px">2016</td> <td style="width:100px">保密</td>  <td style="width:100px">122456789@qq.com</td>
-                </tr> 
-                <tr>
-                    <td style="width:100px">2013</td> <td style="width:100px">保密</td>  <td style="width:100px">122456789@qq.com</td>
-                </tr> 
-                <tr>
-                    <td style="width:100px">2016</td> <td style="width:100px">保密</td>  <td style="width:100px">122456789@qq.com</td>
-                </tr> 
-                <tr>
-                    <td style="width:100px">2014</td> <td style="width:100px">保密</td>  <td style="width:100px">122456789@qq.com</td>
+                    <td style="width:100px"><c:out value="${customer.customerName}"></c:out></td>
+                    <td style="width:100px"><c:out value="${customer.customerMail}"></c:out></td> 
+                    <td style="width:100px"><c:out value="${customer.customerPhone}"></c:out></td>
                 </tr>
-                <tr>
-                    <td style="width:100px">2015</td> <td style="width:100px">保密</td>  <td style="width:100px">122456789@qq.com</td>
-                </tr>
+                 </c:forEach> 
         </table>
         <br/>
         <div align="right">
-            <input type="button" value="新增" onclick="add()"/>
-            <input type="button" value="修改" onclick="update()"/>
-            <input type="button" value="删除" onclick="delete()"/>
+            <input type="submit" value="新增" onclick="add()"/>
+            <input type="submit" value="修改" onclick="update()"/>
+            <input type="submit" value="删除" onclick="delete()"/>
         </div>
     </body>
 </html>
