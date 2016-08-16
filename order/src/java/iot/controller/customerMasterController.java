@@ -43,8 +43,15 @@ public class customerMasterController {
          
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("orderPU");
         CustomerMasterDAO cmdao = new CustomerMasterDAO(emf);
-        //List<CustomerMaster> cms = cmdao.findCustomerMasterByNameId(Integer.parseInt(customerId), customerName);
-        List<CustomerMaster> cms = cmdao.findCustomerMasterByName(customerName);
+        List<CustomerMaster> cms;
+        if (customerId.length() > 0 && customerName.length() == 0) {
+            cms = cmdao.findCustomerMasterById(customerId);
+        }else if(customerId.length() == 0 && customerName.length() > 0){
+            cms = cmdao.findCustomerMasterByName(customerName);
+        }else{
+            cms = cmdao.findCustomerMasterByNameId(customerId, customerName);
+        }
+        
         model.addAttribute("cmList", cms);
         return "CustInfo";
         
