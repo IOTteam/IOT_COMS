@@ -42,34 +42,39 @@ public class UserDaoImplTest {
     /**
      * Test of getAllUser method, of class UserDaoImpl.
      */
-    @Test
-    public void testGetAllUser() {
-        System.out.println("getAllUser");
-        UserDaoImpl instance = new UserDaoImpl();
-        List<User> result = instance.getAllUser();
-        String us = result.toString();
-        System.out.println(us);
-    }
+//    @Test
+//    public void testGetAllUser() {
+
+//        UserDaoImpl instance = new UserDaoImpl();
+//        List<User> result = instance.getAllUser();
+//    }
     
     @Test
     public void testGetUser() {
        
+         UserDaoImpl instance = new UserDaoImpl();
+         String username = "admin";
+         String password = "admin";
+         User result = instance.getUserByname(username, password);
+         
+         System.out.println(result.getUserName());
+        
     }
     
-     @Test
-    public void testAddUser() {
-        System.out.println("testAddUser");
-        UserDaoImpl instance = new UserDaoImpl();
-        
-        User u = new User();        
-      u.setLoginId(44);
-       u.setUserId("0070");
-        u.setPassword("00000");
-        u.setUserName("帕奇");
-       
-        instance.addUser(u);
-
-    }
+//     @Test
+//    public void testAddUser() {
+//        System.out.println("testAddUser");
+//        UserDaoImpl instance = new UserDaoImpl();
+//        
+//        User u = new User();        
+//      u.setLoginId(44);
+//       u.setUserId("0070");
+//        u.setPassword("00000");
+//        u.setUserName("帕奇");
+//       
+//        instance.addUser(u);
+//
+//    }
     
 //     @Test
 //    public void testDelUser() {

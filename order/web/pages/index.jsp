@@ -27,12 +27,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             <div id="header">
               </br>
               <div align="center"><h1>客户订单管理系统 </h1></div>
-              <div align="right"><font color="red">欢迎登陆！！！</font><button style="color: blue" onclick="">注销</button></div>
+              <div align="right"><font color="red">${user},欢迎登陆！！！</font><button style="color: blue" onclick="">注销</button></div>
             </div>
             <div id="menu">
                 <h1>Menu</h1>
                 <dl>
-                    <dt><a href="pages/login.jsp" target="right"><h2>登陆</h2></a></dt>
+
+                    <dt><form action="CustInfo" method="get"><input type="submit" value="客户信息"/></form></dt>
                     <dt><a href="pages/CustInfo.jsp" target="right"><h2>客户信息</h2></a></dt>
                     <dt><a href="" target="right"><h2>商品信息</h2></a></dt>
                     <dt><a href="" target="right"><h2>订单列表</h2></a></dt>

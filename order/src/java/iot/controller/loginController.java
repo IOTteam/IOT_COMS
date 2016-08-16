@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  *
@@ -22,20 +23,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class loginController {
     
     @RequestMapping(method = RequestMethod.GET)
-    public String hello(ModelMap model){
-        System.out.println("iot.controller.loginController.helloController()");
-        model.addAttribute("message", "hello world!");
+    public String loginPage(ModelMap model){
+        
         return "login";
         
     }
     
     @RequestMapping(method = RequestMethod.POST)
-    public String sayHello(HttpServletRequest request,ModelMap model){
-
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        
-        System.out.println(username);
+    public String loginAction(@RequestParam("username") String username,@RequestParam("password") String password,ModelMap model){
         
         UserDaoImpl udi = new UserDaoImpl();
         User user = udi.getUserByname(username,password);
@@ -43,9 +38,10 @@ public class loginController {
         if (user.getPassword().equals("")&&user.getUserName().equals("")){
             return "no";
         }else{
-            model.addAttribute("name", user.getUserId() + user.getUserName());
-            return "hello";
+            model.addAttribute("user", user.getUserName());
+            return "redirect:index";
         }
     }
+    
     
 }
