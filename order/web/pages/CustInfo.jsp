@@ -39,7 +39,7 @@
         </table>
         <br/>
         <div align="right">
-            <input type="submit" value="新增" onclick="add()"/>
+            <form action="CustInfo/add" method="post"><input type="submit" value="新增" onclick="add()"/></form>
             <input type="submit" value="修改" onclick="update()"/>
             <input type="submit" value="删除" onclick="delete()"/>
         </div>

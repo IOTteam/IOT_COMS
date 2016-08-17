@@ -54,6 +54,37 @@ public class customerMasterController {
         
         model.addAttribute("cmList", cms);
         return "CustInfo";
+    }
+    
+    @RequestMapping(value = "add",method = RequestMethod.POST)
+    public String customerAddPage(ModelMap model){
+         
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("orderPU");
+        CustomerMasterDAO cmdao = new CustomerMasterDAO(emf);
+        int count = cmdao.getCustomerMasterCount();
+
+        model.addAttribute("count", count+1);
+        return "custAdd";
+        
+    }
+    
+    @RequestMapping(value = "custAdd",method = RequestMethod.POST)
+    public String customerAdd(@RequestParam("customerId") String customerId,@RequestParam("customerName") String customerName,
+            @RequestParam("customerMail") String customerMail,@RequestParam("customerPhone") String customerPhone,ModelMap model) throws Exception{
+         
+        EntityManagerFactory emf = Persistence.createEntityManagerFactory("orderPU");
+        CustomerMasterDAO cmdao = new CustomerMasterDAO(emf);
+        CustomerMaster cmNew = new CustomerMaster();
+        cmNew.setCustomerId(customerId);
+        cmNew.setCustomerMail(customerMail);
+        cmNew.setCustomerName(customerName);
+        cmNew.setCustomerPhone(customerPhone);
+        cmNew.setCustomerMasterId(Integer.parseInt(customerId));
+        cmdao.create(cmNew);
+
+        List<CustomerMaster> cms = cmdao.findCustomerMasterById(customerId);
+        model.addAttribute("cmsList", cms);
+        return "CustInfo";
         
     }
 }

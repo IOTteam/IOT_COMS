@@ -14,4 +14,11 @@
 
     <!-- ADD PERSISTENCE SUPPORT HERE (jpa, hibernate, etc) -->
 
+<bean class="org.springframework.orm.jpa.LocalEntityManagerFactoryBean" id="entityManagerFactory">
+<property name="persistenceUnitName" value="orderPU"/>
+</bean>
+<bean class="org.springframework.orm.jpa.JpaTransactionManager" id="transactionManager">
+<property name="entityManagerFactory" ref="entityManagerFactory"/>
+</bean>
+<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 </beans>
