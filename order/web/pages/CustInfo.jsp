@@ -6,17 +6,29 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+   <%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
 <!DOCTYPE html>
 <html>
     <head>
+     
+
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>客户信息表</title>
+        <script type="text/javascript">
+            function add(){
+                window.location = "<%=basePath%>CustInfo/CustAdd";
+
+            }
+        </script>
     </head>
     <body>
 
         <h1>${cus}</h1>
         <div class="">
-            <form action="CustInfo" method="post">
+            <form action="CustQuery" method="post">
 		<h3 align="center">客户信息列表</h3>
 		    <p>客户编码：<input type="text" name="customerId" />
                        客户名称：<input type="text" name="customerName" />
@@ -42,7 +54,7 @@
         </table>
         <br/>
         <div align="right">
-            <form action="CustInfo/add" method="post"><input type="submit" value="新增" onclick="add()"/></form>
+            <input type="submit" value="新增" onclick="add()"/>
             <input type="submit" value="修改" onclick="update()"/>
             <input type="submit" value="删除" onclick="delete()"/>
         </div>

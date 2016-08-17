@@ -33,7 +33,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <h1>Menu</h1>
                 <dl>
 
-                    <dt><form action="CustInfo" method="get"><input type="submit" value="客户信息"/></form></dt>
+                    <dt><form action="CustInfo/CustQuery" method="get"><input type="submit" value="客户信息"/></form></dt>
                     <dt><a href="pages/CustInfo.jsp" target="right"><h2>客户信息</h2></a></dt>
                     <dt><a href="" target="right"><h2>商品信息</h2></a></dt>
                     <dt><a href="" target="right"><h2>订单列表</h2></a></dt>

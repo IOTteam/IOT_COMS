@@ -23,7 +23,7 @@ import javax.persistence.EntityManagerFactory;
 
 /**
  *
- * @author hatanococoro
+ * @author GaryLiu
  */
 public class CustomerMasterDAO implements Serializable {
 
@@ -193,40 +193,6 @@ public class CustomerMasterDAO implements Serializable {
             em.close();
         }
     }
-    
-     public List<CustomerMaster> findCustomerMasterById(String CustomerId) {
-        EntityManager em = getEntityManager();
-        try {
-           Query query = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerId = :customerId");
-            query.setParameter("customerId", CustomerId);
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-     
-     public List<CustomerMaster> findCustomerMasterByName(String CustomerName) {
-        EntityManager em = getEntityManager();
-        try {
-            Query query = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerName = :customerName");
-            query.setParameter("customerName", CustomerName);
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-     
-      public List<CustomerMaster> findCustomerMasterByNameId(String id,String name) {
-        EntityManager em = getEntityManager();
-        try {
-            Query query = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerId = :customerId and c.customerName = :customerName");
-            query.setParameter("customerId", id);
-            query.setParameter("customerName", name);
-            return query.getResultList();
-        } finally {
-            em.close();
-        }
-    }
 
     public int getCustomerMasterCount() {
         EntityManager em = getEntityManager();
@@ -239,6 +205,33 @@ public class CustomerMasterDAO implements Serializable {
         } finally {
             em.close();
         }
+    }
+    public List<CustomerMaster> queryCustomerMasterByIdName(String customerName,String customerId){
+        //此函数实现按name、ID、name+ID3种方式查询customer，实现逻辑为当name为空时使用ID查询，ID为空时使用Name查询，若都不为空则利用2个参数一起查询
+       EntityManager em = getEntityManager();//创建实体管理
+       try{
+           if (customerId.length()==0) {
+               Query queryByName ;//创建一个查询
+               queryByName = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerName = :customerName");//拼接查询语句
+               queryByName.setParameter("customerName", customerName);//将参数赋值给查询语句中的customerName
+               return queryByName.getResultList();//返回查询结果，结果存在一个list中
+           }
+           else if (customerName.length()==0) {
+               Query queryById ;
+               queryById = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerId = :customerId");
+               queryById.setParameter("customerId", customerId);
+               return queryById.getResultList();
+           }
+           else{
+                Query queryByIdName ;
+                queryByIdName = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerId = :customerId and c.customerName = :customerName");
+                queryByIdName.setParameter("customerId", customerId);
+                queryByIdName.setParameter("customerName", customerName);
+                return queryByIdName.getResultList();
+           }
+       }finally{
+           em.close();//关闭实体管理
+       }
     }
     
 }

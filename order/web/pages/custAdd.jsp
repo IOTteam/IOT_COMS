@@ -13,8 +13,8 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <form action="custAdd" method="post">
-		<h3 align="center">客户信息列表</h3>
+        <form action="CustAdd" method="post">
+		<h3 align="ccustAddenter">客户信息列表</h3>
                 <p>客户编码：<input type="text" name="customerId"  value="${count}"/>
                        客户名称：<input type="text" name="customerName" />
                        客户邮箱：<input type="text" name="customerMail" />
@@ -22,5 +22,6 @@
                        <input type="submit" value="新增"/>
                     </p>
             </form>
+                       
     </body>
 </html>
