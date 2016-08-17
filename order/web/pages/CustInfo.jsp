@@ -36,6 +36,9 @@
                     <td style="width:100px"><c:out value="${customer.customerPhone}"></c:out></td>
                 </tr>
                  </c:forEach> 
+                <tr>
+                    ${cmqf}
+                </tr>
         </table>
         <br/>
         <div align="right">
