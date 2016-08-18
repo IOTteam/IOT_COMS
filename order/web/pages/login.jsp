@@ -13,6 +13,7 @@
     </head>
     <body>
     <form method="post" >  
+        <h1>${user}</h1>
     用户名：<input type="text" name="username" value="admin"/><br/>  
     密 码：<input type="password" name="password" value="admin"/><br/>  
     <input value="登陆" type="submit"/>  
