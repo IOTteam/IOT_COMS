@@ -39,7 +39,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 <tr>
                     <td style="width:100px"><c:out value="${order.orderId}"></c:out></td>
                     <td style="width:100px"><c:out value="${order.orderDate}"></c:out></td> 
-                    <td style="width:100px"><c:out value="${order.customerId}"></c:out></td>
+                    <td style="width:100px"><c:out value="${order.customerName}"></c:out></td>
                 </tr>
                  </c:forEach> 
                 <tr>

@@ -5,8 +5,13 @@
  */
 package iot.controller;
 
+import iot.dao.entity.CustomerMaster;
+import iot.dao.entity.OrderInfo;
 import iot.dao.entity.OrderMaster;
+import iot.dao.repository.CustomerMasterDAO;
 import iot.dao.repository.OrderMasterDAO;
+import iot.service.OrderService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +29,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class orderController {
     
     @Autowired
-    private EntityManagerFactory emf;
-    
-    
+    private OrderService orderService;
     
     @RequestMapping(value = "queryList",method = RequestMethod.GET)
     public String getOrderList(ModelMap model){
         
-        OrderMasterDAO omdao = new OrderMasterDAO(emf);
-        List<OrderMaster> orders = omdao.findOrderMasterEntities();
+        List<OrderInfo> orders = orderService.getOrderList();
         model.addAttribute("orderList", orders);
         return "orderList";
         

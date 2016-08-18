@@ -15,6 +15,7 @@
 
     
     <context:component-scan base-package="iot.controller" />
+    <context:component-scan base-package="iot.service" />
     <mvc:annotation-driven/>
     <!--静态资源-->
 <!--    <mvc:default-servlet-handler/>-->

@@ -234,4 +234,19 @@ public class CustomerMasterDAO implements Serializable {
        }
     }
     
+    public CustomerMaster findCustomerMasterById(String customerId){
+      
+       EntityManager em = getEntityManager();//创建实体管理
+       try{
+
+               Query queryById ;
+               queryById = em.createQuery("SELECT c FROM CustomerMaster c WHERE c.customerId = :customerId");
+               queryById.setParameter("customerId", customerId);
+               return (CustomerMaster)queryById.getSingleResult();
+
+       }finally{
+           em.close();//关闭实体管理
+       }
+    }
+    
 }
