@@ -17,6 +17,13 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>订单表</title>
+        
+        <script type="text/javascript">
+            function add(){
+                window.location = "<%=basePath%>orderList/orderAdd";
+
+            }
+        </script>
     </head>
     <body>
 
@@ -36,7 +43,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
                 <c:forEach items="${orderList}" var ="order">
                 <tr>
-                    <form action="detailQuery" method="post">
+                    <form action="detailQuery" method="get">
                     <td style="width:100px"><input type="text" name="orderId" readonly="true" value=<c:out value="${order.orderId}"></c:out> /></td>
                     <td style="width:100px"><input type="text" name="orderDate" readonly="true" value=<c:out value="${order.orderDate}"></c:out> /></td> 
                     <td style="width:100px"><input type="text" name="customerName" readonly="true" value=<c:out value="${order.customerName}"></c:out> /> </td>

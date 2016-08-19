@@ -23,9 +23,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author hatanococoro
  */
-public class CustomerPriceJpaController implements Serializable {
+public class CustomerPriceDAO implements Serializable {
 
-    public CustomerPriceJpaController(EntityManagerFactory emf) {
+    public CustomerPriceDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;

@@ -26,9 +26,9 @@ import javax.persistence.EntityManagerFactory;
  *
  * @author hatanococoro
  */
-public class ProductMasterJpaController implements Serializable {
+public class ProductMasterDAO implements Serializable {
 
-    public ProductMasterJpaController(EntityManagerFactory emf) {
+    public ProductMasterDAO(EntityManagerFactory emf) {
         this.emf = emf;
     }
     private EntityManagerFactory emf = null;
@@ -239,6 +239,17 @@ public class ProductMasterJpaController implements Serializable {
         EntityManager em = getEntityManager();
         try {
             return em.find(ProductMaster.class, id);
+        } finally {
+            em.close();
+        }
+    }
+    
+    public ProductMaster findProductMasterByproductId(String productId) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT p FROM ProductMaster p WHERE p.productId = :productId");
+            query.setParameter("productId", productId);
+            return (ProductMaster)query.getSingleResult();
         } finally {
             em.close();
         }

@@ -10,16 +10,19 @@ import iot.dao.entity.OrderDetail;
 import iot.dao.entity.OrderDetailInfo;
 import iot.dao.entity.OrderInfo;
 import iot.dao.entity.OrderMaster;
+import iot.dao.entity.ProductMaster;
 import iot.dao.repository.CustomerMasterDAO;
 import iot.dao.repository.OrderDetailDAO;
 import iot.dao.repository.OrderMasterDAO;
+import iot.dao.repository.ProductMasterDAO;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
-import org.eclipse.persistence.sdo.SDOConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.ModelMap;
 
 /**
  *
@@ -31,7 +34,7 @@ public class OrderService {
     
     @Autowired
     private EntityManagerFactory emf;
-    
+    //查询全部订单头档
     public List<OrderInfo> getOrderList(){
         
         OrderMasterDAO omdao = new OrderMasterDAO(emf);
@@ -52,7 +55,7 @@ public class OrderService {
     }
         return ordersNew;
     }
-    
+    //通过订单ID获取订单详细信息，返回一个LIST
     public List<OrderDetailInfo> getDetails(String orderId){
         
         OrderDetailDAO oddao = new OrderDetailDAO(emf);
@@ -73,7 +76,7 @@ public class OrderService {
 
         return orderDetailInfos;
     }
-    
+    //通过订单ID（orderId）获取订单实体
     public OrderMaster getOrderMasterId(String orderId){
     
         OrderMasterDAO omdao = new OrderMasterDAO(emf);
@@ -81,4 +84,57 @@ public class OrderService {
         
         return om;
     }
+    //获取订单头档数量及当前时间
+    public HashMap getOrderCount(){
+    
+        OrderMasterDAO omdao = new OrderMasterDAO(emf);
+        int count = omdao.getOrderMasterCount() + 2;
+        
+        Date d = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = sdf.format(d);
+        
+        HashMap<String,Object> hm = new HashMap<String, Object>();
+        hm.put("date", date);
+        hm.put("count", count);
+        
+        return hm;
+    }
+    //添加订单头档
+    public void addOrderMaster(String orderId,String orderDate,String customerId) throws Exception{
+    
+        OrderMasterDAO omdao = new OrderMasterDAO(emf);
+        
+        OrderMaster om = new  OrderMaster();
+        
+        Date d = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        d = sdf.parse(orderDate);
+        
+        om.setCustomerId(customerId);
+        om.setOrderId(orderId);
+        om.setOrderDate(d);
+        om.setOrderMasterId(Integer.parseInt(orderId));
+        
+        omdao.create(om);
+
+    }
+    //添加订单详细信息
+    public void addOrderDtail(int orderMasterId,String productId,String orderQty,String orderPrice) throws Exception{
+        
+            OrderMasterDAO omdao = new OrderMasterDAO(emf);
+            OrderMaster omId = omdao.findOrderMaster(orderMasterId);
+            
+            ProductMasterDAO pmdao = new ProductMasterDAO(emf);
+            ProductMaster pmId = pmdao.findProductMasterByproductId(productId);
+            
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrderMasterId(omId);
+            orderDetail.setProductId(pmId);
+            orderDetail.setOrderQty(Integer.parseInt(orderQty));
+            orderDetail.setOrderPrice(Float.parseFloat(orderPrice));
+            
+            OrderDetailDAO oddao = new OrderDetailDAO(emf);
+            oddao.create(orderDetail);
+        }
 }

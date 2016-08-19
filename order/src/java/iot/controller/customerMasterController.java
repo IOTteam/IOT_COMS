@@ -7,10 +7,8 @@ package iot.controller;
 
 import iot.dao.entity.CustomerMaster;
 import iot.dao.repository.CustomerMasterDAO;
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
