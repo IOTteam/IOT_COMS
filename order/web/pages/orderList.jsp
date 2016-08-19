@@ -20,7 +20,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </head>
     <body>
 
-        <h1>${cus}</h1>
         <div class="">
             <form action="CustQuery" method="post">
 		<h3 align="center">订单信息列表</h3>
@@ -33,13 +32,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
         <table  border="1px" cellspacing="0px" class="" style="height:300px; width:100%; border-collapse:collapse" >
 		<tr>
-		<th style="width:100px">订单编码</th> <th style="width:100px">下单日期</th>  <th style="width:100px">下单客户</th>   
+		<th style="width:100px">订单编码</th> <th style="width:100px">下单日期</th>  <th style="width:100px">下单客户</th> <th style="width:100px">操作</th>   
 		</tr>
                 <c:forEach items="${orderList}" var ="order">
                 <tr>
-                    <td style="width:100px"><c:out value="${order.orderId}"></c:out></td>
-                    <td style="width:100px"><c:out value="${order.orderDate}"></c:out></td> 
-                    <td style="width:100px"><c:out value="${order.customerName}"></c:out></td>
+                    <form action="detailQuery" method="post">
+                    <td style="width:100px"><input type="text" name="orderId" readonly="true" value=<c:out value="${order.orderId}"></c:out> /></td>
+                    <td style="width:100px"><input type="text" name="orderDate" readonly="true" value=<c:out value="${order.orderDate}"></c:out> /></td> 
+                    <td style="width:100px"><input type="text" name="customerName" readonly="true" value=<c:out value="${order.customerName}"></c:out> /> </td>
+                    <td style="width:100px"><input type="submit" value="详细"/></td>
+                    </form>
+                    
                 </tr>
                  </c:forEach> 
                 <tr>

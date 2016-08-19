@@ -110,7 +110,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "iot.dao.entity.Login[ loginId=" + loginId + " ]";
+        return "iot.dao.entity.User[ loginId=" + loginId + " ]";
     }
     
 }

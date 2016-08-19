@@ -193,6 +193,17 @@ public class OrderMasterDAO implements Serializable {
             em.close();
         }
     }
+    
+     public OrderMaster findOrderMasterByOrderId(String orderId) {
+        EntityManager em = getEntityManager();
+        try {
+            Query queryById = em.createQuery("SELECT o FROM OrderMaster o WHERE o.orderId = :orderId");
+            queryById.setParameter("orderId", orderId);
+            return (OrderMaster)queryById.getSingleResult();
+        } finally {
+            em.close();
+        }
+    }
 
     public int getOrderMasterCount() {
         EntityManager em = getEntityManager();
