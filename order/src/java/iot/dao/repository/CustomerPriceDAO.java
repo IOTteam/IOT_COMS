@@ -5,19 +5,18 @@
  */
 package iot.dao.repository;
 
-import java.io.Serializable;
-import javax.persistence.Query;
-import javax.persistence.EntityNotFoundException;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import iot.dao.entity.CustomerMaster;
 import iot.dao.entity.CustomerPrice;
 import iot.dao.entity.ProductMaster;
 import iot.dao.repository.exceptions.NonexistentEntityException;
-import iot.dao.repository.exceptions.PreexistingEntityException;
+import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.EntityNotFoundException;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  *
@@ -34,36 +33,13 @@ public class CustomerPriceDAO implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(CustomerPrice customerPrice) throws PreexistingEntityException, Exception {
+    public void create(CustomerPrice customerPrice) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            CustomerMaster customerMasterId = customerPrice.getCustomerMasterId();
-            if (customerMasterId != null) {
-                customerMasterId = em.getReference(customerMasterId.getClass(), customerMasterId.getCustomerMasterId());
-                customerPrice.setCustomerMasterId(customerMasterId);
-            }
-            ProductMaster productMasterId = customerPrice.getProductMasterId();
-            if (productMasterId != null) {
-                productMasterId = em.getReference(productMasterId.getClass(), productMasterId.getProductMasterId());
-                customerPrice.setProductMasterId(productMasterId);
-            }
             em.persist(customerPrice);
-            if (customerMasterId != null) {
-                customerMasterId.getCustomerPriceCollection().add(customerPrice);
-                customerMasterId = em.merge(customerMasterId);
-            }
-            if (productMasterId != null) {
-                productMasterId.getCustomerPriceCollection().add(customerPrice);
-                productMasterId = em.merge(productMasterId);
-            }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findCustomerPrice(customerPrice.getCustomerPriceId()) != null) {
-                throw new PreexistingEntityException("CustomerPrice " + customerPrice + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -76,36 +52,7 @@ public class CustomerPriceDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            CustomerPrice persistentCustomerPrice = em.find(CustomerPrice.class, customerPrice.getCustomerPriceId());
-            CustomerMaster customerMasterIdOld = persistentCustomerPrice.getCustomerMasterId();
-            CustomerMaster customerMasterIdNew = customerPrice.getCustomerMasterId();
-            ProductMaster productMasterIdOld = persistentCustomerPrice.getProductMasterId();
-            ProductMaster productMasterIdNew = customerPrice.getProductMasterId();
-            if (customerMasterIdNew != null) {
-                customerMasterIdNew = em.getReference(customerMasterIdNew.getClass(), customerMasterIdNew.getCustomerMasterId());
-                customerPrice.setCustomerMasterId(customerMasterIdNew);
-            }
-            if (productMasterIdNew != null) {
-                productMasterIdNew = em.getReference(productMasterIdNew.getClass(), productMasterIdNew.getProductMasterId());
-                customerPrice.setProductMasterId(productMasterIdNew);
-            }
             customerPrice = em.merge(customerPrice);
-            if (customerMasterIdOld != null && !customerMasterIdOld.equals(customerMasterIdNew)) {
-                customerMasterIdOld.getCustomerPriceCollection().remove(customerPrice);
-                customerMasterIdOld = em.merge(customerMasterIdOld);
-            }
-            if (customerMasterIdNew != null && !customerMasterIdNew.equals(customerMasterIdOld)) {
-                customerMasterIdNew.getCustomerPriceCollection().add(customerPrice);
-                customerMasterIdNew = em.merge(customerMasterIdNew);
-            }
-            if (productMasterIdOld != null && !productMasterIdOld.equals(productMasterIdNew)) {
-                productMasterIdOld.getCustomerPriceCollection().remove(customerPrice);
-                productMasterIdOld = em.merge(productMasterIdOld);
-            }
-            if (productMasterIdNew != null && !productMasterIdNew.equals(productMasterIdOld)) {
-                productMasterIdNew.getCustomerPriceCollection().add(customerPrice);
-                productMasterIdNew = em.merge(productMasterIdNew);
-            }
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
@@ -134,16 +81,6 @@ public class CustomerPriceDAO implements Serializable {
                 customerPrice.getCustomerPriceId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The customerPrice with id " + id + " no longer exists.", enfe);
-            }
-            CustomerMaster customerMasterId = customerPrice.getCustomerMasterId();
-            if (customerMasterId != null) {
-                customerMasterId.getCustomerPriceCollection().remove(customerPrice);
-                customerMasterId = em.merge(customerMasterId);
-            }
-            ProductMaster productMasterId = customerPrice.getProductMasterId();
-            if (productMasterId != null) {
-                productMasterId.getCustomerPriceCollection().remove(customerPrice);
-                productMasterId = em.merge(productMasterId);
             }
             em.remove(customerPrice);
             em.getTransaction().commit();
@@ -182,6 +119,20 @@ public class CustomerPriceDAO implements Serializable {
         EntityManager em = getEntityManager();
         try {
             return em.find(CustomerPrice.class, id);
+        } finally {
+            em.close();
+        }
+    }
+    
+    public CustomerPrice findCustomerPriceByCustProdRange(CustomerMaster customerMasterId,ProductMaster productMasterId,int orderQty) {
+        EntityManager em = getEntityManager();
+        try {
+            Query query = em.createQuery("SELECT c FROM CustomerPrice c WHERE c.customerMasterId = :customerMasterId and c.productMasterId = :productMasterId AND c.range <:orderQty order by c.range DESC ");
+            //查询结果以range为准降序排列
+            query.setParameter("customerMasterId", customerMasterId);//赋值
+            query.setParameter("productMasterId", productMasterId);//赋值
+            query.setParameter("orderQty", orderQty);//赋值
+            return (CustomerPrice)query.getResultList().get(0);//查询结果取第一个结果
         } finally {
             em.close();
         }

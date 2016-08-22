@@ -22,6 +22,9 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 window.location = "<%=basePath%>orderList/orderDetailAdd";
 
             }
+            function updateDetail(){
+                window.location = "<%=basePath%>orderList/orderDetailUpdate";
+            }
             
         </script>
     </head>
@@ -32,10 +35,17 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		</tr>
                 <c:forEach items="${detailList}" var ="orderDetail">
                 <tr>
-                    <td style="width:100px"><c:out value="${orderDetail.orderMasterId_int}"></c:out></td>
-                    <td style="width:100px"><c:out value="${orderDetail.productName}"></c:out></td> 
-                    <td style="width:100px"><c:out value="${orderDetail.orderQty}"></c:out></td>
-                    <td style="width:100px"><c:out value="${orderDetail.orderPrice}"></c:out></td>
+                    <form action="orderDetailUpdatePage" method="post">
+                    <td style="width:100px"><input type="text" name="orderMasterId" readonly="true" value=<c:out value="${orderDetail.orderMasterId_int}"></c:out> /></td>
+                    <td style="width:100px"><input type="text" name="productName" readonly="true" value=<c:out value="${orderDetail.productName}"></c:out> /></td> 
+                    <td style="width:100px"><input type="text" name="orderQty" readonly="true" value=<c:out value="${orderDetail.orderQty}"></c:out> /></td>
+                    <td style="width:100px"><input type="text" name="orderPrice" readonly="true" value=<c:out value="${orderDetail.orderPrice}"></c:out> /></td>
+                    <input type="text" name="orderDetailId" readonly="true" hidden="true" value=<c:out value="${orderDetail.orderDetailId}"></c:out> />
+                    <input type="text" name="productId" readonly="true" hidden="true" value=<c:out value="${orderDetail.productId_int}"></c:out> />
+                    <td style="width:100px"><input type="submit" value="修改"/></td>
+                    
+                    </form>
+
                 </tr>
                  </c:forEach> 
                 <tr>
@@ -44,6 +54,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         
                 <div align="right">
             <button onclick="addDetail()">新增</button>
+            
 
         </div>
     </body>

@@ -187,7 +187,7 @@ public class OrderDetailDAO implements Serializable {
         }
     }
     
-     public  List<OrderDetail> findOrderDetailByOrderMId(OrderMaster orderMasterId) {
+    public  List<OrderDetail> findOrderDetailByOrderMId(OrderMaster orderMasterId) {
         EntityManager em = getEntityManager();
         try {
             Query query = em.createQuery("SELECT o FROM OrderDetail o WHERE o.orderMasterId = :orderMasterId");
@@ -210,5 +210,4 @@ public class OrderDetailDAO implements Serializable {
             em.close();
         }
     }
-    
 }

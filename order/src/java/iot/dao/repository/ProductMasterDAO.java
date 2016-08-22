@@ -10,14 +10,12 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import iot.dao.entity.CustomerPrice;
-import java.util.ArrayList;
-import java.util.Collection;
 import iot.dao.entity.OrderDetail;
 import iot.dao.entity.ProductMaster;
-import iot.dao.repository.exceptions.IllegalOrphanException;
 import iot.dao.repository.exceptions.NonexistentEntityException;
 import iot.dao.repository.exceptions.PreexistingEntityException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -38,9 +36,6 @@ public class ProductMasterDAO implements Serializable {
     }
 
     public void create(ProductMaster productMaster) throws PreexistingEntityException, Exception {
-        if (productMaster.getCustomerPriceCollection() == null) {
-            productMaster.setCustomerPriceCollection(new ArrayList<CustomerPrice>());
-        }
         if (productMaster.getOrderDetailCollection() == null) {
             productMaster.setOrderDetailCollection(new ArrayList<OrderDetail>());
         }
@@ -48,12 +43,6 @@ public class ProductMasterDAO implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<CustomerPrice> attachedCustomerPriceCollection = new ArrayList<CustomerPrice>();
-            for (CustomerPrice customerPriceCollectionCustomerPriceToAttach : productMaster.getCustomerPriceCollection()) {
-                customerPriceCollectionCustomerPriceToAttach = em.getReference(customerPriceCollectionCustomerPriceToAttach.getClass(), customerPriceCollectionCustomerPriceToAttach.getCustomerPriceId());
-                attachedCustomerPriceCollection.add(customerPriceCollectionCustomerPriceToAttach);
-            }
-            productMaster.setCustomerPriceCollection(attachedCustomerPriceCollection);
             Collection<OrderDetail> attachedOrderDetailCollection = new ArrayList<OrderDetail>();
             for (OrderDetail orderDetailCollectionOrderDetailToAttach : productMaster.getOrderDetailCollection()) {
                 orderDetailCollectionOrderDetailToAttach = em.getReference(orderDetailCollectionOrderDetailToAttach.getClass(), orderDetailCollectionOrderDetailToAttach.getOrderDetailId());
@@ -61,15 +50,6 @@ public class ProductMasterDAO implements Serializable {
             }
             productMaster.setOrderDetailCollection(attachedOrderDetailCollection);
             em.persist(productMaster);
-            for (CustomerPrice customerPriceCollectionCustomerPrice : productMaster.getCustomerPriceCollection()) {
-                ProductMaster oldProductMasterIdOfCustomerPriceCollectionCustomerPrice = customerPriceCollectionCustomerPrice.getProductMasterId();
-                customerPriceCollectionCustomerPrice.setProductMasterId(productMaster);
-                customerPriceCollectionCustomerPrice = em.merge(customerPriceCollectionCustomerPrice);
-                if (oldProductMasterIdOfCustomerPriceCollectionCustomerPrice != null) {
-                    oldProductMasterIdOfCustomerPriceCollectionCustomerPrice.getCustomerPriceCollection().remove(customerPriceCollectionCustomerPrice);
-                    oldProductMasterIdOfCustomerPriceCollectionCustomerPrice = em.merge(oldProductMasterIdOfCustomerPriceCollectionCustomerPrice);
-                }
-            }
             for (OrderDetail orderDetailCollectionOrderDetail : productMaster.getOrderDetailCollection()) {
                 ProductMaster oldProductIdOfOrderDetailCollectionOrderDetail = orderDetailCollectionOrderDetail.getProductId();
                 orderDetailCollectionOrderDetail.setProductId(productMaster);
@@ -92,35 +72,14 @@ public class ProductMasterDAO implements Serializable {
         }
     }
 
-    public void edit(ProductMaster productMaster) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(ProductMaster productMaster) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             ProductMaster persistentProductMaster = em.find(ProductMaster.class, productMaster.getProductMasterId());
-            Collection<CustomerPrice> customerPriceCollectionOld = persistentProductMaster.getCustomerPriceCollection();
-            Collection<CustomerPrice> customerPriceCollectionNew = productMaster.getCustomerPriceCollection();
             Collection<OrderDetail> orderDetailCollectionOld = persistentProductMaster.getOrderDetailCollection();
             Collection<OrderDetail> orderDetailCollectionNew = productMaster.getOrderDetailCollection();
-            List<String> illegalOrphanMessages = null;
-            for (CustomerPrice customerPriceCollectionOldCustomerPrice : customerPriceCollectionOld) {
-                if (!customerPriceCollectionNew.contains(customerPriceCollectionOldCustomerPrice)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain CustomerPrice " + customerPriceCollectionOldCustomerPrice + " since its productMasterId field is not nullable.");
-                }
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Collection<CustomerPrice> attachedCustomerPriceCollectionNew = new ArrayList<CustomerPrice>();
-            for (CustomerPrice customerPriceCollectionNewCustomerPriceToAttach : customerPriceCollectionNew) {
-                customerPriceCollectionNewCustomerPriceToAttach = em.getReference(customerPriceCollectionNewCustomerPriceToAttach.getClass(), customerPriceCollectionNewCustomerPriceToAttach.getCustomerPriceId());
-                attachedCustomerPriceCollectionNew.add(customerPriceCollectionNewCustomerPriceToAttach);
-            }
-            customerPriceCollectionNew = attachedCustomerPriceCollectionNew;
-            productMaster.setCustomerPriceCollection(customerPriceCollectionNew);
             Collection<OrderDetail> attachedOrderDetailCollectionNew = new ArrayList<OrderDetail>();
             for (OrderDetail orderDetailCollectionNewOrderDetailToAttach : orderDetailCollectionNew) {
                 orderDetailCollectionNewOrderDetailToAttach = em.getReference(orderDetailCollectionNewOrderDetailToAttach.getClass(), orderDetailCollectionNewOrderDetailToAttach.getOrderDetailId());
@@ -129,17 +88,6 @@ public class ProductMasterDAO implements Serializable {
             orderDetailCollectionNew = attachedOrderDetailCollectionNew;
             productMaster.setOrderDetailCollection(orderDetailCollectionNew);
             productMaster = em.merge(productMaster);
-            for (CustomerPrice customerPriceCollectionNewCustomerPrice : customerPriceCollectionNew) {
-                if (!customerPriceCollectionOld.contains(customerPriceCollectionNewCustomerPrice)) {
-                    ProductMaster oldProductMasterIdOfCustomerPriceCollectionNewCustomerPrice = customerPriceCollectionNewCustomerPrice.getProductMasterId();
-                    customerPriceCollectionNewCustomerPrice.setProductMasterId(productMaster);
-                    customerPriceCollectionNewCustomerPrice = em.merge(customerPriceCollectionNewCustomerPrice);
-                    if (oldProductMasterIdOfCustomerPriceCollectionNewCustomerPrice != null && !oldProductMasterIdOfCustomerPriceCollectionNewCustomerPrice.equals(productMaster)) {
-                        oldProductMasterIdOfCustomerPriceCollectionNewCustomerPrice.getCustomerPriceCollection().remove(customerPriceCollectionNewCustomerPrice);
-                        oldProductMasterIdOfCustomerPriceCollectionNewCustomerPrice = em.merge(oldProductMasterIdOfCustomerPriceCollectionNewCustomerPrice);
-                    }
-                }
-            }
             for (OrderDetail orderDetailCollectionOldOrderDetail : orderDetailCollectionOld) {
                 if (!orderDetailCollectionNew.contains(orderDetailCollectionOldOrderDetail)) {
                     orderDetailCollectionOldOrderDetail.setProductId(null);
@@ -174,7 +122,7 @@ public class ProductMasterDAO implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -185,17 +133,6 @@ public class ProductMasterDAO implements Serializable {
                 productMaster.getProductMasterId();
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The productMaster with id " + id + " no longer exists.", enfe);
-            }
-            List<String> illegalOrphanMessages = null;
-            Collection<CustomerPrice> customerPriceCollectionOrphanCheck = productMaster.getCustomerPriceCollection();
-            for (CustomerPrice customerPriceCollectionOrphanCheckCustomerPrice : customerPriceCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This ProductMaster (" + productMaster + ") cannot be destroyed since the CustomerPrice " + customerPriceCollectionOrphanCheckCustomerPrice + " in its customerPriceCollection field has a non-nullable productMasterId field.");
-            }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
             }
             Collection<OrderDetail> orderDetailCollection = productMaster.getOrderDetailCollection();
             for (OrderDetail orderDetailCollectionOrderDetail : orderDetailCollection) {

@@ -7,8 +7,11 @@ package iot.dao.entity;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -33,20 +36,21 @@ public class CustomerPrice implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
-    @Column(name = "range")
+    @Column(name = "ranges")
     private int range;
     @Basic(optional = false)
     @Column(name = "range_price")
     private float rangePrice;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "customer_price_id")
     private Integer customerPriceId;
     @JoinColumn(name = "customer_master_id", referencedColumnName = "customer_master_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     private CustomerMaster customerMasterId;
     @JoinColumn(name = "product_master_id", referencedColumnName = "product_master_id")
-    @ManyToOne(optional = false)
+    @ManyToOne(cascade = CascadeType.ALL)
     private ProductMaster productMasterId;
 
     public CustomerPrice() {

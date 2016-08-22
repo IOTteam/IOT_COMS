@@ -5,13 +5,16 @@
  */
 package iot.service;
 
+import com.sun.javafx.image.IntPixelGetter;
 import iot.dao.entity.CustomerMaster;
+import iot.dao.entity.CustomerPrice;
 import iot.dao.entity.OrderDetail;
 import iot.dao.entity.OrderDetailInfo;
 import iot.dao.entity.OrderInfo;
 import iot.dao.entity.OrderMaster;
 import iot.dao.entity.ProductMaster;
 import iot.dao.repository.CustomerMasterDAO;
+import iot.dao.repository.CustomerPriceDAO;
 import iot.dao.repository.OrderDetailDAO;
 import iot.dao.repository.OrderMasterDAO;
 import iot.dao.repository.ProductMasterDAO;
@@ -59,7 +62,7 @@ public class OrderService {
     public List<OrderDetailInfo> getDetails(String orderId){
         
         OrderDetailDAO oddao = new OrderDetailDAO(emf);
-        OrderMaster orderMasterId = getOrderMasterId(orderId);
+        OrderMaster orderMasterId = getOrderMaster(orderId);
         List<OrderDetail> orderDetails = oddao.findOrderDetailByOrderMId(orderMasterId);
         
         List<OrderDetailInfo> orderDetailInfos = new ArrayList<OrderDetailInfo>();
@@ -67,9 +70,11 @@ public class OrderService {
         
             OrderDetailInfo odi = new OrderDetailInfo();
             odi.setOrderMasterId_int(orderDetails.get(i).getOrderMasterId().getOrderMasterId());
+            odi.setProductId_int(Integer.parseInt(orderDetails.get(i).getProductId().getProductId()));//获取ProductId，并强制转换成int
             odi.setProductName(orderDetails.get(i).getProductId().getProductName());
             odi.setOrderPrice(orderDetails.get(i).getOrderPrice());
             odi.setOrderQty(orderDetails.get(i).getOrderQty());
+            odi.setOrderDetailId(orderDetails.get(i).getOrderDetailId());
             
             orderDetailInfos.add(odi);
         }
@@ -77,7 +82,7 @@ public class OrderService {
         return orderDetailInfos;
     }
     //通过订单ID（orderId）获取订单实体
-    public OrderMaster getOrderMasterId(String orderId){
+    public OrderMaster getOrderMaster(String orderId){
     
         OrderMasterDAO omdao = new OrderMasterDAO(emf);
         OrderMaster om = omdao.findOrderMasterByOrderId(orderId);
@@ -120,21 +125,58 @@ public class OrderService {
 
     }
     //添加订单详细信息
-    public void addOrderDtail(int orderMasterId,String productId,String orderQty,String orderPrice) throws Exception{
-        
-            OrderMasterDAO omdao = new OrderMasterDAO(emf);
-            OrderMaster omId = omdao.findOrderMaster(orderMasterId);
+    public void addOrderDtail(int orderMasterId,String productId,String CustomerId,String orderQty,String orderPrice) throws Exception{
+       
+        OrderMasterDAO omdao = new OrderMasterDAO(emf);//新建一个ordermaster类
+        OrderMaster omId = omdao.findOrderMaster(orderMasterId);//根据参数orderMasterId查到具体OrderMaster类
             
-            ProductMasterDAO pmdao = new ProductMasterDAO(emf);
-            ProductMaster pmId = pmdao.findProductMasterByproductId(productId);
+        ProductMasterDAO pmdao = new ProductMasterDAO(emf);//同上
+        ProductMaster pmId = pmdao.findProductMasterByproductId(productId);
             
-            OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setOrderMasterId(omId);
-            orderDetail.setProductId(pmId);
-            orderDetail.setOrderQty(Integer.parseInt(orderQty));
-            orderDetail.setOrderPrice(Float.parseFloat(orderPrice));
+        CustomerMasterDAO cmdao = new CustomerMasterDAO(emf);//同上
+        CustomerMaster cmId = cmdao.findCustomerMasterById(CustomerId);
             
-            OrderDetailDAO oddao = new OrderDetailDAO(emf);
-            oddao.create(orderDetail);
+        CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);//同上
+        CustomerPrice cp = cpdao.findCustomerPriceByCustProdRange(cmId, pmId, Integer.parseInt(orderQty));//通过客户ID、产品ID、数量查询价格
+            
+        OrderDetail orderDetail = new OrderDetail();
+        orderDetail.setOrderMasterId(omId);//为何要以实体类赋值：对应实体类外键关系。换句话说：实体类中对应的setOrderMasterId为OrderMaster。
+        orderDetail.setProductId(pmId);
+        orderDetail.setOrderQty(Integer.parseInt(orderQty));
+        orderDetail.setOrderPrice(cp.getRangePrice());
+            
+        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        oddao.create(orderDetail);//新增orderDetail
         }
+    //修改订单详细信息
+    public boolean orderDetailUpdate(String orderMasterId,
+            String productName,
+            String orderQty,
+            String orderPrice,
+            String orderDetailId,
+            String productId,
+            String customerId) throws Exception{
+        OrderMasterDAO omdao = new OrderMasterDAO(emf);//新建一个ordermaster类
+        OrderMaster omId = omdao.findOrderMaster(Integer.parseInt(orderMasterId));//根据参数orderMasterId查到具体OrderMaster类
+        
+        ProductMasterDAO pmdao = new ProductMasterDAO(emf);//同上
+        ProductMaster pmId = pmdao.findProductMasterByproductId(productId);
+        
+        CustomerMasterDAO cmdao = new CustomerMasterDAO(emf);//同上
+        CustomerMaster cmId = cmdao.findCustomerMasterById(customerId);
+        
+        CustomerPriceDAO cpdao = new CustomerPriceDAO(emf);//同上
+        CustomerPrice cp = cpdao.findCustomerPriceByCustProdRange(cmId, pmId, Integer.parseInt(orderQty)); 
+        
+        OrderDetail orderDetail = new OrderDetail();
+        
+        orderDetail.setOrderMasterId(omId);//为何要以实体类赋值：对应实体类外键关系。换句话说：实体类中对应的setOrderMasterId为OrderMaster。
+        orderDetail.setProductId(pmId);
+        orderDetail.setOrderQty(Integer.parseInt(orderQty));
+        orderDetail.setOrderPrice(cp.getRangePrice());
+        orderDetail.setOrderDetailId(Integer.parseInt(orderDetailId));
+        OrderDetailDAO oddao = new OrderDetailDAO(emf);
+        oddao.edit(orderDetail);
+        return true;
+    }
 }

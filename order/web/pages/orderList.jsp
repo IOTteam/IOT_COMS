@@ -52,9 +52,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     
                 </tr>
                  </c:forEach> 
-                <tr>
-                    ${cmqf}
-                </tr>
         </table>
         <br/>
         <div align="right">
