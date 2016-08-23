@@ -18,7 +18,12 @@
     <context:component-scan base-package="iot.service" />
     <mvc:annotation-driven/>
     <!--静态资源-->
-<!--    <mvc:default-servlet-handler/>-->
+<!--   <mvc:default-servlet-handler/>-->
+
+    <mvc:resources location="/" mapping="/**/*.js"/>  
+    <mvc:resources location="/" mapping="/**/*.css"/>  
+    <mvc:resources location="/" mapping="/**/*.png"/>  
+    <mvc:resources location="/" mapping="/**/*.gif"/>  
     
     <bean class="org.springframework.web.servlet.mvc.support.ControllerClassNameHandlerMapping"/>
     <!--

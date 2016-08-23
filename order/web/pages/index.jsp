@@ -1,57 +1,93 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-    "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%
 String path = request.getContextPath();
 String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
 %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>客户订单管理系统</title>
-        <style type="text/css">
-            div#container{width:100%;}
-            div#header {height:15%;background-color:#99bbbb;}
-            div#menu {background-color:#ffff99; height:460px; width:10%; float:left;text-align:center;}
-            div#content {background-color:white; height:460px; width:90%; float:left;}
-            div#footer {background-color:#99bbbb; clear:both; text-align:center;}
-            h1 {margin-bottom:0;}
-            h2 {margin-bottom:0; font-size:20px;}
-            dl {margin:0;}
-            dt {list-style:none;}
-            a {text-decoration: none;}
-        </style>
-        
-        <script type="text/javascript">
-            function getOrderList()(){
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit|ie-comp|ie-stand">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<!--[if lt IE 9]>
+<script type="text/javascript" src="lib/html5.js"></script>
+<script type="text/javascript" src="lib/respond.min.js"></script>
+<script type="text/javascript" src="lib/PIE_IE678.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/H-ui.css" />
+<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/lib/Hui-iconfont/1.0.7/iconfont.css" />
+<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/lib/icheck/icheck.css" />
+<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/style.css" />
+<!--[if lt IE 9]>
+<link href="static/h-ui/css/H-ui.ie.css" rel="stylesheet" type="text/css" />
+<![endif]-->
+<!--[if IE 6]>
+<script type="text/javascript" src="lib/DD_belatedPNG_0.0.8a-min.js" ></script>
+<script>DD_belatedPNG.fix('*');</script>
+<![endif]-->
+<title>客户信息</title>
+<meta name="keywords" content="表格">
+
+  <script type="text/javascript">
+            function getOrderList(){
                 window.location = "<%=basePath%>order/orderList";
 
             }
         </script>
-    </head>
-    <body>
-        <div id="container">
-            <div id="header">
-              </br>
-              <div align="center"><h1>客户订单管理系统 </h1></div>
-              <div align="right"><font color="red">${user},欢迎登陆！！！</font><button style="color: blue" onclick="">注销</button></div>
-            </div>
-            <div id="menu">
-                <h1>Menu</h1>
-                <dl>
+        
+</head>
+<body>
+<section class="container">
+    
+    <header class="navbar-wrapper">
+	<div class="navbar navbar-fixed-top ">
+		<div class="container cl">
+			<a class="logo navbar-logo f-l mr-10 hidden-xs f-26">客户订单管理系统</a>
+			<nav class="nav navbar-nav nav-collapse" role="navigation" id="Hui-navbar">
+				<ul class="cl">
+					<li class="current"><a href="<%=basePath%>CustInfo/CustQuery">客户信息</a></li>
+					<li><a href="<%=basePath%>orderList/queryList">订单列表</a></li>
+					<li><a href="#">商品信息</a></li>
+					<li><a href="#">客户产品单价</a></li>
+				</ul>
+			</nav>
+                                            
+        	<ul class="Hui-userbar text-r">
+		<li class="dropDown dropDown_hover"><a href="#" class="c-red" >${user},欢迎登陆</a>
+			<ul class="dropDown-menu radius box-shadow">
+				<li><a href="#">个人信息</a></li>
+				<li><a href="#">退出</a></li>
+			</ul>
+		</li>
+                </ul>
+		</div>
+	</div>
+</header>
+                                        
+    <footer class="footer mt-20">
+	<div class="container">
 
-                    <dt><form action="CustInfo/CustQuery" method="get"><input type="submit" value="客户信息"/></form></dt>
-                    <dt><form action="orderList/queryList" method="get"><input type="submit" value="订单列表"/></form></dt>
-                    <dt><a href="pages/CustInfo.jsp" target="right"><h2>客户信息</h2></a></dt>
-                    <dt><a href="" target="right"><h2>商品信息</h2></a></dt>
-                    <dt><a href="" target="right" onclick="getOrderList()"><h2>订单列表</h2></a></dt>
-                    <dt><a href="" target="right"><h2>客户产品单价</h2></a></dt>
-                </dl>
-            </div>
-            <div id="content">
-                 <iframe width="1210px" height="100%"  frameborder="1" scrolling="yes" name="right"></iframe>
-            </div>
-            <div id="footer">IOT六人小分队</div>
-        </div>
-    </body>
+		<p>IOT六人小分队 <br></p>
+	</div>
+</footer>        
+</section>
+
+<script type="text/javascript" src="<%=basePath%>pages/lib/jquery/1.9.1/jquery.min.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/layer/2.1/layer.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/laypage/1.2/laypage.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/My97DatePicker/WdatePicker.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/icheck/jquery.icheck.min.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/bootstrap-Switch/bootstrapSwitch.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/Validform/5.3.2/Validform.min.js"></script> 
+<script type="text/javascript" src="<%=basePath%>pages/lib/Validform/5.3.2/passwordStrength-min.js"></script>
+<script type="text/javascript" src="<%=basePath%>pages/static/h-ui/js/H-ui.js"></script>
+<script>
+
+</script>
+</body>
 </html>
