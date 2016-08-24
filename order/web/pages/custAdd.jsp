@@ -55,7 +55,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <form action="CustAdd" method="post">
 		<h3 align="center">新增客户信息</h3>
                 <div class="formControls col-xs-5">
-                客户编码：<input type="text" name="customerId" readonly="true"  value="${count}" class="input-text radius"  />
+                客户编码：<input type="text" name="customerId" readonly="true" id="customerId"  value="${count}" class="input-text radius"  />
 		</div>
                 <div class="formControls col-xs-5">
                客户名称：<input type="text" name="customerName"  class="input-text radius"  />
@@ -73,7 +73,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 
                 <div class="formControls col-xs-2">
                 <span class="select-box">
-                    <select class="select" size="1" name="productId" onchange="getProductPrice(this.options[this.options.selectedIndex].value)">
+                    <select class="select" size="1" name="productId" id="productId" onchange="getProductPrice(this.options[this.options.selectedIndex].value)">
                     <option value="" selected>请选择产品</option>
                      <c:forEach items="${pmList}" var ="product">
                          <option value="<c:out value="${product.productId}"></c:out>"><c:out value="${product.productName}"></c:out></option>
@@ -82,26 +82,25 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 </span>
                 </div>
                 
-                <div class="formControls col-xs-2" id="productPrice">
-                    <input type="text" name="price" class="input-text radius" value="当前价格" />
+                <div class="formControls col-xs-2">
+                    <input type="text" name="productPrice" id="productPrice" readonly="true" class="input-text radius" value="当前价格" />
 		</div>
                 
                 <div class="formControls col-xs-2">
-                <input type="text" name="customerQty" class="input-text radius" placeholder="输入优惠区间" />
+                <input type="text" name="preferentialMin" class="input-text radius" id="preferentialMin" placeholder="输入优惠区间" />
 		</div>
                  <div class="formControls col-xs-1">
                      <p>~</p>
 		</div>
                 <div class="formControls col-xs-2">
-                <input type="text" name="customerQty" class="input-text radius" placeholder="输入优惠区间" />
+                <input type="text" name="preferentialMax" class="input-text radius" id="preferentialMax" placeholder="输入优惠区间" />
 		</div>
                 <div class="formControls col-xs-2">
-                <input type="text" name="customerQty" class="input-text radius" placeholder="输入优惠额度" />
+                <input type="text" name="preferentialCredit" class="input-text radius" id="preferentialCredit" placeholder="输入优惠额度" />
 		</div>
                 <div class="formControls col-xs-1">
-                    <input type="button" value="+" class="btn btn-primary radius" onclick="addElements()" />
+                    <input type="button" value="+" class="btn btn-primary radius" onclick="addPreferential()" />
 		</div>
-                
                 <div class="formControls col-xs-5">
                 <input type="submit" value="新增" class="btn btn-primary radius" />
 		</div>
@@ -131,19 +130,43 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                 datatype:"json",  
                 data : {productId:""+ value +""},  
                 success : function(data, stats) {  
-                    if (stats == "success") {  
-                      alert("成功");  
-                      console.dir(data.get);
+                    if (stats === "success") {  
+                      $("#productPrice")[0].value = data.productPrice;
                     }  
                 },  
                 error : function(data) {  
-                    alert("请求失败");  
+                    alert("查询产品单价失败");  
                 }  
             });
-                
-              //  document.getElementById("productPrice").innerHTML = xmlhttp.responseText;
-                
-            }
+    }
+    
+    function addPreferential(){
+        
+        var customerId =  $("#customerId")[0].value;
+        var productId = $("#productId")[0].value;
+        var preferentialMin = $("#preferentialMin")[0].value;
+        var preferentialMax = $("#preferentialMax")[0].value;
+        var preferentialCredit = $("#preferentialCredit")[0].value;
+        
+        $.ajax({  
+                url : "setCusProPrice",  
+                type : "Post",  
+                datatype:"json",  
+                data : {customerId:""+ customerId +"", productId:""+ productId +"", preferentialMin:""+ preferentialMin +"", 
+                preferentialMax:""+ preferentialMax +"", preferentialCredit:""+ preferentialCredit +""},  
+                success : function(data, stats) {  
+                    if (stats === "success") {  
+                     console.dir(data);
+                     
+                     
+                    }  
+                },  
+                error : function(data) {  
+                    alert("失败");  
+                }  
+            });
+        
+    }
 
 </script>
 </body>

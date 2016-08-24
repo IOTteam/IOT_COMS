@@ -6,14 +6,19 @@
 package iot.controller;
 
 import iot.dao.entity.CustomerMaster;
+import iot.dao.entity.CustomerPrice;
+import iot.dao.entity.CustomerPriceInfo;
+import iot.dao.entity.Product;
 import iot.dao.entity.ProductMaster;
 import iot.dao.repository.CustomerMasterDAO;
 import iot.dao.repository.ProductMasterDAO;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -93,13 +98,42 @@ public class customerMasterController {
     
     @RequestMapping(value = "getProductPrice",method = RequestMethod.GET)
     @ResponseBody
-    public ProductMaster getproductprice(@RequestParam("productId") String productId ,ModelMap model){
+    public Product getProductPrice(@RequestParam("productId") String productId ,ModelMap model){
         
         ProductMasterDAO pmdao = new ProductMasterDAO(emf);
         ProductMaster pm = pmdao.findProductMasterByproductId(productId);
 
-        //return "{para:\""+ pm +"\"}";
-        return pm;
+        Product product = new Product();
+        
+        product.setProductId(pm.getProductId());
+        product.setProductMasterId(pm.getProductMasterId());
+        product.setProductName(pm.getProductName());
+        product.setProductPrice(pm.getProductPrice());
+        product.setProductSpec(pm.getProductSpec());
+        //return ""+ pm.getProductPrice() +"";
+        
+        return product;
+        
+    }
+    
+    private List<CustomerPriceInfo> customerPriceInfos = new ArrayList<CustomerPriceInfo>();
+    
+    @RequestMapping(value = "setCusProPrice",method = RequestMethod.POST)
+    @ResponseBody
+    public List<CustomerPriceInfo> setCusProPrice(@RequestParam("customerId") String customerId,@RequestParam("productId") String productId,
+            @RequestParam("preferentialMin") String preferentialMin,@RequestParam("preferentialMax") String preferentialMax,
+            @RequestParam("preferentialCredit") String preferentialCredit){
+        
+        CustomerPriceInfo customerPriceInfo = new CustomerPriceInfo();
+        customerPriceInfo.setCustomerId(customerId);
+        customerPriceInfo.setProductId(productId);
+        customerPriceInfo.setPreferentialMin(preferentialMin);
+        customerPriceInfo.setPreferentialMax(preferentialMax);
+        customerPriceInfo.setPreferentialCredit(preferentialCredit);
+        
+        customerPriceInfos.add(customerPriceInfo);
+        
+        return customerPriceInfos;
         
     }
     
