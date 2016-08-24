@@ -38,7 +38,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/H-ui.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/lib/Hui-iconfont/1.0.7/iconfont.css" />
 <link rel="stylesheet" type="text/css" href="<%=basePath%>pages/lib/icheck/icheck.css" />
-<link rel="stylesheet" type="text/css" href="<%=basePath%>pages/static/h-ui/css/style.css" />
 <!--[if lt IE 9]>
 <link href="static/h-ui/css/H-ui.ie.css" rel="stylesheet" type="text/css" />
 <![endif]-->
@@ -72,22 +71,35 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
                     <h1><small>新增客户产品单价信息:</small></h1>
                 </div>
                 
-                <div class="formControls col-xs-3">
+                <div class="formControls col-xs-2">
                 <span class="select-box">
-                <select class="select" size="1" name="demo1">
+                    <select class="select" size="1" name="productId" onchange="getProductPrice(this.options[this.options.selectedIndex].value)">
                     <option value="" selected>请选择产品</option>
-                    <option value="1">西瓜</option>
-                    <option value="2">香蕉</option>
-                    <option value="3">苹果</option>
+                     <c:forEach items="${pmList}" var ="product">
+                         <option value="<c:out value="${product.productId}"></c:out>"><c:out value="${product.productName}"></c:out></option>
+                    </c:forEach> 
                   </select>
                 </span>
                 </div>
                 
-                <div class="formControls col-xs-3">
+                <div class="formControls col-xs-2" id="productPrice">
+                    <input type="text" name="price" class="input-text radius" value="当前价格" />
+		</div>
+                
+                <div class="formControls col-xs-2">
                 <input type="text" name="customerQty" class="input-text radius" placeholder="输入优惠区间" />
 		</div>
-                <div class="formControls col-xs-3">
+                 <div class="formControls col-xs-1">
+                     <p>~</p>
+		</div>
+                <div class="formControls col-xs-2">
+                <input type="text" name="customerQty" class="input-text radius" placeholder="输入优惠区间" />
+		</div>
+                <div class="formControls col-xs-2">
                 <input type="text" name="customerQty" class="input-text radius" placeholder="输入优惠额度" />
+		</div>
+                <div class="formControls col-xs-1">
+                    <input type="button" value="+" class="btn btn-primary radius" onclick="addElements()" />
 		</div>
                 
                 <div class="formControls col-xs-5">
@@ -99,6 +111,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	</form>
 </section>
 
+<script type="text/javascript" src="<%=basePath%>pages/lib/jquery/jquery-3.1.0.min.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/lib/jquery/1.9.1/jquery.min.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/lib/layer/2.1/layer.js"></script> 
 <script type="text/javascript" src="<%=basePath%>pages/lib/laypage/1.2/laypage.js"></script> 
@@ -109,6 +122,28 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <script type="text/javascript" src="<%=basePath%>pages/lib/Validform/5.3.2/passwordStrength-min.js"></script>
 <script type="text/javascript" src="<%=basePath%>pages/static/h-ui/js/H-ui.js"></script>
 <script>
+            
+    function getProductPrice(value){
+
+        $.ajax({  
+                url : "getProductPrice",  
+                type : "get",  
+                datatype:"json",  
+                data : {productId:""+ value +""},  
+                success : function(data, stats) {  
+                    if (stats == "success") {  
+                      alert("成功");  
+                      console.dir(data.get);
+                    }  
+                },  
+                error : function(data) {  
+                    alert("请求失败");  
+                }  
+            });
+                
+              //  document.getElementById("productPrice").innerHTML = xmlhttp.responseText;
+                
+            }
 
 </script>
 </body>

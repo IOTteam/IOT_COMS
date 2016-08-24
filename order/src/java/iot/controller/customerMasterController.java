@@ -6,7 +6,9 @@
 package iot.controller;
 
 import iot.dao.entity.CustomerMaster;
+import iot.dao.entity.ProductMaster;
 import iot.dao.repository.CustomerMasterDAO;
+import iot.dao.repository.ProductMasterDAO;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
@@ -52,14 +55,20 @@ public class customerMasterController {
         return "CustInfo";
     }
     
+    
+    //跳转到新增客户页面
     @RequestMapping(value = "CustAdd",method = RequestMethod.GET)
     public String customerAddPage(ModelMap model){
          
 
         CustomerMasterDAO cmdao = new CustomerMasterDAO(emf);
         int count = cmdao.getCustomerMasterCount();
+        
+        ProductMasterDAO pmdao = new ProductMasterDAO(emf);
+        List<ProductMaster> pms = pmdao.findProductMasterEntities();
 
-        model.addAttribute("count", count+1);
+        model.addAttribute("pmList",pms);
+        model.addAttribute("count", count+11);
         return "custAdd";
         
     }
@@ -80,4 +89,18 @@ public class customerMasterController {
         return "redirect:/CustInfo/CustQuery";
         
     }
+    
+    
+    @RequestMapping(value = "getProductPrice",method = RequestMethod.GET)
+    @ResponseBody
+    public ProductMaster getproductprice(@RequestParam("productId") String productId ,ModelMap model){
+        
+        ProductMasterDAO pmdao = new ProductMasterDAO(emf);
+        ProductMaster pm = pmdao.findProductMasterByproductId(productId);
+
+        //return "{para:\""+ pm +"\"}";
+        return pm;
+        
+    }
+    
 }
